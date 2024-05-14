@@ -1,0 +1,4 @@
+name: yungchai
+version: '${project.version}'
+main: com.caltr.yungchai.Yungchai
+api-version: '1.20'
