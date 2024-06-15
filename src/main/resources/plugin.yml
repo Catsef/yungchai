@@ -2,3 +2,8 @@ name: yungchai
 version: '${project.version}'
 main: com.caltr.yungchai.Yungchai
 api-version: '1.20'
+commands:
+  item:
+    description: item
+    usage: /item <item>
+    permission-message: You don't have sufficient permissions to run this command!

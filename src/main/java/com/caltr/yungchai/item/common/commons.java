@@ -10,6 +10,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
@@ -45,12 +46,12 @@ public class commons implements Listener {
             ItemStack inHand = event.getPlayer().getInventory().getItemInMainHand();
             Player p = event.getPlayer();
             if (inHand.isSimilar(SWORDSMAN_SWORD())) {
-                if (!Yungchai.SWORD.check(p)) {return;}
+                if (!Yungchai.SWORD.check(p)) {p.sendMessage(String.format(ChatColor.RED + "Swordsman's Adrenaline is on cooldown (for %d)", Yungchai.SWORD.get(p)));return;}
                 p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 200, 1));
                 p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 1));
                 Yungchai.SWORD.set(p, 20);
             } else if (inHand.isSimilar(SWORDSMAN_SHIELD())) {
-                if (!Yungchai.SHIELD.check(p)) {return;}
+                if (!Yungchai.SHIELD.check(p)) {p.sendMessage(String.format(ChatColor.RED + "Swordsman's Charge is on cooldown (for %d)", Yungchai.SWORD.get(p)));return;}
                 Vector v = p.getEyeLocation().getDirection();
                 p.setVelocity(v.multiply(3));
                 Yungchai.SWORD.set(p, 10);
@@ -67,6 +68,7 @@ public class commons implements Listener {
         lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "RMB to Pump Adrenaline");
         b.setUnbreakable(true);
         b.setLore(lore);
+        b.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES);
         a.setItemMeta(b);
         return a;
     }
@@ -80,6 +82,7 @@ public class commons implements Listener {
         lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "RMB to Charge");
         b.setLore(lore);
         b.setUnbreakable(true);
+        b.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES);
         a.setItemMeta(b);
         return a;
     }

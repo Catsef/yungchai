@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class BasicCooldown extends Cooldown {
-    public static HashMap<UUID, Double> map;
+    public HashMap<UUID, Double> map;
 
     @Override
     public void setup() {
