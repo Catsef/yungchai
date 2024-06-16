@@ -8,11 +8,13 @@ import org.bukkit.World;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -63,7 +65,8 @@ public class commons implements Listener {
                 Yungchai.SWORD.set(p, 20);
                 p.setCooldown(Material.STONE_SWORD, 20*20);
 
-            } else if (inHand.isSimilar(SWORDSMAN_SHIELD())) {
+            }
+            else if (inHand.isSimilar(SWORDSMAN_SHIELD())) {
 
                 if (!Yungchai.SHIELD.check(p)) {p.sendMessage(String.format(ChatColor.RED + "Swordsman's Charge is on cooldown (for %d seconds)", Yungchai.SHIELD.get(p)));return;}
 
@@ -73,7 +76,8 @@ public class commons implements Listener {
                 Yungchai.SHIELD.set(p, 10);
                 p.setCooldown(Material.SHIELD, 10*20);
 
-            } else if (inHand.isSimilar(HUNTER_BOW())) {
+            }
+            else if (inHand.isSimilar(HUNTER_BOW())) {
 
                 if (!Yungchai.BOW.check(p)) {p.sendMessage(String.format(ChatColor.RED + "Hunter's Piercing Shot is on cooldown (for %d seconds)", Yungchai.BOW.get(p)));return;}
 
@@ -83,6 +87,30 @@ public class commons implements Listener {
 
                 Yungchai.BOW.set(p, 7);
                 p.setCooldown(Material.BOW, 7*20);
+            }
+            else if (inHand.isSimilar(BRAWLER_CHAIN())) {
+                if (!Yungchai.CHAIN.check(p)) {p.sendMessage(String.format(ChatColor.RED + "Brawler's Attach and Pull is on cooldown (for %d seconds)", Yungchai.CHAIN.get(p)));return;}
+
+                List<Entity> nearEntities = p.getNearbyEntities(15, 15, 15);
+                double BufferDistance = 100_000_000;
+                Player iterator;
+                Player candidate = null;
+                for (Entity nearEntity : nearEntities) {
+                    if (nearEntity instanceof Player) {
+                        iterator = (Player) nearEntity;
+                        double DistanceBetweenPlayerAndIterator = p.getLocation().distance(iterator.getLocation());
+                        if (BufferDistance > DistanceBetweenPlayerAndIterator) {
+                            BufferDistance = DistanceBetweenPlayerAndIterator;
+                            candidate = iterator;
+                        }
+                    }
+                }
+
+                Vector dirYanked = p.getEyeLocation().getDirection().multiply(-2);
+                if (candidate == null) {return;}
+                candidate.setVelocity(dirYanked);
+                Yungchai.CHAIN.set(p, 10);
+                p.setCooldown(Material.CHAIN, 10*20);
             }
         }
         if ((event.getAction() == Action.LEFT_CLICK_AIR) | (event.getAction() == Action.LEFT_CLICK_BLOCK)) {
@@ -101,8 +129,9 @@ public class commons implements Listener {
         Player p = event.getPlayer();
         if (event.getRightClicked() instanceof Player) {
             Player c = (Player) event.getRightClicked();
+            ItemStack inHand = p.getInventory().getItemInMainHand();
             if (p.getInventory().getItemInMainHand().isSimilar(HUNTER_AXE())) {
-                if (!Yungchai.AXE.check(p)) {p.sendMessage(String.format(ChatColor.RED + "Hunter's Chain Swing is on cooldown (for %d seconds)", Yungchai.AXE.get(p)));return;}
+                if (!Yungchai.AXE.check(p)) {p.sendMessage(String.format(ChatColor.RED + "Hunter's Combo Swing is on cooldown (for %d seconds)", Yungchai.AXE.get(p)));return;}
 
                 for (int i = 0; i < 9; i++) {
                     Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->  {
@@ -117,64 +146,69 @@ public class commons implements Listener {
                 p.setCooldown(Material.STONE_AXE, 30*20);
 
             }
+            else if (p.getInventory().getItemInMainHand().isSimilar(BRAWLER_GLOVE())) {
+                if (!Yungchai.GLOVE.check(p)) {p.sendMessage(String.format(ChatColor.RED + "Brawler's Uppercut is on cooldown (for %d seconds)", Yungchai.GLOVE.get(p)));return;}
+                c.damage(4);
+                c.setVelocity(c.getVelocity().add(new Vector(0, 0.6, 0)));
+                Yungchai.GLOVE.set(p, 10);
+                p.setCooldown(Material.CLAY_BALL, 10*20);
+            }
         }
+    }
+
+    @EventHandler
+    public void EntityDamageEntity(EntityDamageByEntityEvent event) {
+        Entity e = event.getEntity();
+        Entity d = event.getDamager();
+
+        if ((e instanceof Player) && (d instanceof Player)) {
+            Player Pe = (Player) e;
+            Player Pd = (Player) d;
+            if (Pd.getInventory().getItemInMainHand().isSimilar(BRAWLER_GLOVE())) {
+                Pe.damage(3);
+                Pe.setVelocity(Pd.getEyeLocation().getDirection().multiply(1.1));
+            }
+        }
+    }
+
+    public static ItemStack COMMON_ITEM(String name, String rmbPower, Material item, String quote, String lmbPower) {
+        ItemStack a = new ItemStack(item, 1);
+        ItemMeta b = a.getItemMeta();
+        b.setDisplayName(ChatColor.GRAY + "" + ChatColor.BOLD + name);
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.DARK_GRAY + "Rarity " + ChatColor.GRAY + "Common");
+        lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "RMB to " + rmbPower);
+        lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "LMB to " + lmbPower);
+        lore.add(ChatColor.ITALIC + quote);
+        b.setUnbreakable(true);
+        b.setLore(lore);
+        b.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES);
+        a.setItemMeta(b);
+        return a;
     }
 
 
     public static ItemStack SWORDSMAN_SWORD() {
-        ItemStack a = new ItemStack(Material.STONE_SWORD, 1);
-        ItemMeta b = a.getItemMeta();
-        b.setDisplayName(ChatColor.GRAY + "" + ChatColor.BOLD + "Heavyblade");
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.DARK_GRAY + "Rarity " + ChatColor.GRAY + "Common");
-        lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "RMB to Pump Adrenaline");
-        b.setUnbreakable(true);
-        b.setLore(lore);
-        b.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES);
-        a.setItemMeta(b);
-        return a;
+        return COMMON_ITEM("Heavyblade", "Pump Adrenaline", Material.STONE_SWORD, "[Engraving] Athena.", "n/a");
+    }
+    public static ItemStack SWORDSMAN_SHIELD() {
+        return COMMON_ITEM("Pavise Shield", "Charge", Material.SHIELD, "Around 75 cm tall.", "n/a");
     }
 
-    public static ItemStack SWORDSMAN_SHIELD() {
-        ItemStack a = new ItemStack(Material.SHIELD, 1);
-        ItemMeta b = a.getItemMeta();
-        b.setDisplayName(ChatColor.GRAY + "" + ChatColor.BOLD + "Pavise Shield");
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.DARK_GRAY + "Rarity " + ChatColor.GRAY + "Common");
-        lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "RMB to Charge");
-        b.setLore(lore);
-        b.setUnbreakable(true);
-        b.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES);
-        a.setItemMeta(b);
-        return a;
-    }
 
     public static ItemStack HUNTER_AXE() {
-        ItemStack a = new ItemStack(Material.STONE_AXE, 1);
-        ItemMeta b = a.getItemMeta();
-        b.setDisplayName(ChatColor.GRAY + "" + ChatColor.BOLD + "Forest Axe");
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.DARK_GRAY + "Rarity " + ChatColor.GRAY + "Common");
-        lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "RMB to Chain Swing");
-        b.setLore(lore);
-        b.setUnbreakable(true);
-        b.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES);
-        a.setItemMeta(b);
-        return a;
+        return COMMON_ITEM("Forest Axe", "Combo Swing", Material.STONE_AXE, "Chipped blade.", "n/a");
+    }
+    public static ItemStack HUNTER_BOW() {
+        return COMMON_ITEM("Longbow", "Piercing Shot", Material.BOW, "[Engraving] R. H.", "Arrow Fire");
     }
 
-    public static ItemStack HUNTER_BOW() {
-        ItemStack a = new ItemStack(Material.BOW, 1);
-        ItemMeta b = a.getItemMeta();
-        b.setDisplayName(ChatColor.GRAY + "" + ChatColor.BOLD + "Longbow");
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.DARK_GRAY + "Rarity " + ChatColor.GRAY + "Common");
-        lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "RMB to Piercing Shot");
-        b.setLore(lore);
-        b.setUnbreakable(true);
-        b.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES);
-        a.setItemMeta(b);
-        return a;
+
+    public static ItemStack BRAWLER_GLOVE() {
+        return COMMON_ITEM("Gloves", "Uppercut", Material.CLAY_BALL, "[Marker] DOT", "Hook");
+    }
+    public static ItemStack BRAWLER_CHAIN() {
+        return COMMON_ITEM("Metal Chains", "Attach & Pull", Material.CHAIN, "Made of steel.", "Swing");
     }
 
 

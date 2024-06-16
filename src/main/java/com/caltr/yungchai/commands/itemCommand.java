@@ -33,6 +33,14 @@ public class itemCommand implements CommandExecutor {
                     toSend = commons.HUNTER_BOW();
                     break;
                 }
+                case "brawler_glove": {
+                    toSend = commons.BRAWLER_GLOVE();
+                    break;
+                }
+                case "brawler_chain": {
+                    toSend = commons.BRAWLER_CHAIN();
+                }
+
             }
             player.getInventory().addItem(toSend);
 
