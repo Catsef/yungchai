@@ -4,13 +4,14 @@ import com.caltr.yungchai.item.GearStar;
 import com.caltr.yungchai.util;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UncommonGearStars extends GearStar {
+public class UncommonGearStar extends GearStar {
 
     public net.md_5.bungee.api.ChatColor lime = util.asCol("#91ebba");
 
@@ -28,8 +29,8 @@ public class UncommonGearStars extends GearStar {
     }
 
     @Override
-    public ItemStack gearUnwrap() {
-        return null;
+    public void gearUnwrap(int n, Player player) {
+
     }
     // healer and gladiator
 
