@@ -19,6 +19,8 @@ public final class Yungchai extends JavaPlugin implements Listener {
 
     public static BasicCooldown SWORD;
     public static BasicCooldown SHIELD;
+    public static BasicCooldown AXE;
+    public static BasicCooldown BOW;
 
     @Override
     public void onEnable() {
@@ -28,8 +30,10 @@ public final class Yungchai extends JavaPlugin implements Listener {
         commons Commons = new commons(this);
         getServer().getPluginManager().registerEvents(Commons, this);
 
-        this.SWORD = new BasicCooldown(); this.SWORD.setup();
-        this.SHIELD = new BasicCooldown(); this.SHIELD.setup();
+        SWORD = new BasicCooldown(); SWORD.setup();
+        SHIELD = new BasicCooldown(); SHIELD.setup();
+        BOW = new BasicCooldown(); BOW.setup();
+        AXE = new BasicCooldown(); AXE.setup();
 
         this.getCommand("item").setExecutor(new itemCommand());
         this.getCommand("item").setTabCompleter(new autoComplete());
