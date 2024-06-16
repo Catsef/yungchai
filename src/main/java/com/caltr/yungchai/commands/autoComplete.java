@@ -15,6 +15,8 @@ public class autoComplete implements TabCompleter {
         if (strings.length == 1) {
             autocompleteOptions.add("swordman_sword");
             autocompleteOptions.add("swordman_shield");
+            autocompleteOptions.add("hunter_bow");
+            autocompleteOptions.add("hunter_axe");
             return autocompleteOptions;
         }
 

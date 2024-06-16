@@ -1,6 +1,7 @@
 package com.caltr.yungchai.item.common;
 
 import com.caltr.yungchai.Yungchai;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -56,10 +57,11 @@ public class commons implements Listener {
 
                 if (!Yungchai.SWORD.check(p)) {p.sendMessage(String.format(ChatColor.RED + "Swordsman's Adrenaline is on cooldown (for %d seconds)", Yungchai.SWORD.get(p)));return;}
 
-                p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 200, 1));
+                p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 1));
                 p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 1));
 
                 Yungchai.SWORD.set(p, 20);
+                p.setCooldown(Material.STONE_SWORD, 20*20);
 
             } else if (inHand.isSimilar(SWORDSMAN_SHIELD())) {
 
@@ -69,6 +71,7 @@ public class commons implements Listener {
                 p.setVelocity(v.multiply(3));
 
                 Yungchai.SHIELD.set(p, 10);
+                p.setCooldown(Material.SHIELD, 10*20);
 
             } else if (inHand.isSimilar(HUNTER_BOW())) {
 
@@ -76,10 +79,19 @@ public class commons implements Listener {
 
                 World w = p.getWorld();
                 Arrow a = (Arrow) w.spawnEntity(p.getEyeLocation(), EntityType.ARROW);
-                a.setVelocity(p.getEyeLocation().getDirection().multiply(7));
+                a.setVelocity(p.getEyeLocation().getDirection().multiply(4));
 
                 Yungchai.BOW.set(p, 7);
-
+                p.setCooldown(Material.BOW, 7*20);
+            }
+        }
+        if ((event.getAction() == Action.LEFT_CLICK_AIR) | (event.getAction() == Action.LEFT_CLICK_BLOCK)) {
+            ItemStack inHand = event.getPlayer().getInventory().getItemInMainHand();
+            Player p = event.getPlayer();
+            if (inHand.isSimilar(HUNTER_BOW())) {
+                World w = p.getWorld();
+                Arrow a = (Arrow) w.spawnEntity(p.getEyeLocation(), EntityType.ARROW);
+                a.setVelocity(p.getEyeLocation().getDirection().multiply(2));
             }
         }
     }
@@ -93,18 +105,16 @@ public class commons implements Listener {
                 if (!Yungchai.AXE.check(p)) {p.sendMessage(String.format(ChatColor.RED + "Hunter's Chain Swing is on cooldown (for %d seconds)", Yungchai.AXE.get(p)));return;}
 
                 for (int i = 0; i < 9; i++) {
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            c.damage(2, DamageSource.builder(DamageType.PLAYER_ATTACK).build());
-                            Vector pVel = p.getEyeLocation().toVector();
-                            c.setVelocity(pVel.multiply(-2));
-                            p.setVelocity(pVel.multiply(2));
-                        }
-                    }.runTaskLater(plugin, 3*i);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->  {
+                        c.damage(1);
+                        c.setNoDamageTicks(0);
+                        Vector n = c.getVelocity().add(new Vector(0, 0.1, 0));
+                        c.setVelocity(n);
+                    }, i*3);
                 }
 
                 Yungchai.AXE.set(p, 30);
+                p.setCooldown(Material.STONE_AXE, 30*20);
 
             }
         }

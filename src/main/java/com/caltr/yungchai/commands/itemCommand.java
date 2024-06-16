@@ -25,6 +25,14 @@ public class itemCommand implements CommandExecutor {
                     toSend = commons.SWORDSMAN_SHIELD();
                     break;
                 }
+                case "hunter_axe": {
+                    toSend = commons.HUNTER_AXE();
+                    break;
+                }
+                case "hunter_bow": {
+                    toSend = commons.HUNTER_BOW();
+                    break;
+                }
             }
             player.getInventory().addItem(toSend);
 
