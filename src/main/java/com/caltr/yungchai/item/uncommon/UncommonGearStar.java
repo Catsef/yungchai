@@ -21,9 +21,8 @@ public class UncommonGearStar extends GearStar {
         ItemMeta m = b.getItemMeta();
         m.setDisplayName(ChatColor.BOLD + "" + util.asCol("#91ebba") + "Uncommon Gear Star");
         List<String> lore = new ArrayList();
-        lore.add(ChatColor.BOLD + "" + lime + "l" + ChatColor.RESET + " BRAWLER");
-        lore.add(ChatColor.BOLD + "" + lime + "l" + ChatColor.RESET + " HUNTER");
-        lore.add(ChatColor.BOLD + "" + lime + "l" + ChatColor.RESET + " SWORDSMAN");
+        lore.add(ChatColor.BOLD + "" + lime + "l" + ChatColor.RESET + " HEALER");
+        lore.add(ChatColor.BOLD + "" + lime + "l" + ChatColor.RESET + " GLADIATOR");
         b.setItemMeta(m);
         return b;
     }
