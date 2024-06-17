@@ -4,6 +4,7 @@ import com.caltr.yungchai.commands.autoComplete;
 import com.caltr.yungchai.commands.itemCommand;
 import com.caltr.yungchai.cooldown.BasicCooldown;
 import com.caltr.yungchai.item.common.commons;
+import com.caltr.yungchai.item.uncommon.uncommons;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -23,6 +24,8 @@ public final class Yungchai extends JavaPlugin implements Listener {
     public static BasicCooldown BOW;
     public static BasicCooldown GLOVE;
     public static BasicCooldown CHAIN;
+    public static BasicCooldown POT;
+    public static BasicCooldown NEEDLE;
 
     @Override
     public void onEnable() {
@@ -32,6 +35,8 @@ public final class Yungchai extends JavaPlugin implements Listener {
         commons Commons = new commons(this);
         getServer().getPluginManager().registerEvents(Commons, this);
 
+        uncommons Uncommons = new uncommons(this);
+        getServer().getPluginManager().registerEvents(Uncommons, this);
 
         SWORD = new BasicCooldown(); SWORD.setup();
         SHIELD = new BasicCooldown(); SHIELD.setup();
@@ -39,6 +44,7 @@ public final class Yungchai extends JavaPlugin implements Listener {
         AXE = new BasicCooldown(); AXE.setup();
         GLOVE = new BasicCooldown(); GLOVE.setup();
         CHAIN = new BasicCooldown(); CHAIN.setup();
+        POT = new BasicCooldown(); POT.setup();
 
         this.getCommand("item").setExecutor(new itemCommand());
         this.getCommand("item").setTabCompleter(new autoComplete());

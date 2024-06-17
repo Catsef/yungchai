@@ -31,6 +31,7 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.caltr.yungchai.util.smsg;
 import static org.bukkit.Bukkit.getServer;
 
 public class commons implements Listener {
@@ -131,7 +132,7 @@ public class commons implements Listener {
             Player c = (Player) event.getRightClicked();
             ItemStack inHand = p.getInventory().getItemInMainHand();
             if (p.getInventory().getItemInMainHand().isSimilar(HUNTER_AXE())) {
-                if (!Yungchai.AXE.check(p)) {p.sendMessage(String.format(ChatColor.RED + "Hunter's Combo Swing is on cooldown (for %d seconds)", Yungchai.AXE.get(p)));return;}
+                if (!Yungchai.AXE.check(p)) {smsg(p, "Hunter's Combo Swing", Yungchai.AXE.get(p));return;}
 
                 for (int i = 0; i < 9; i++) {
                     Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->  {
@@ -147,7 +148,7 @@ public class commons implements Listener {
 
             }
             else if (p.getInventory().getItemInMainHand().isSimilar(BRAWLER_GLOVE())) {
-                if (!Yungchai.GLOVE.check(p)) {p.sendMessage(String.format(ChatColor.RED + "Brawler's Uppercut is on cooldown (for %d seconds)", Yungchai.GLOVE.get(p)));return;}
+                if (!Yungchai.GLOVE.check(p)) {smsg(p, "Brawler's Uppercut", Yungchai.GLOVE.get(p));return;}
                 c.damage(4);
                 c.setVelocity(c.getVelocity().add(new Vector(0, 0.6, 0)));
                 Yungchai.GLOVE.set(p, 10);
