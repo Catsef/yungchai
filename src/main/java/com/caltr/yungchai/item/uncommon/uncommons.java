@@ -57,7 +57,11 @@ public class uncommons implements Listener {
     @EventHandler
     public void EntityDamageEntity(EntityDamageByEntityEvent event) {
         // lclick at player
+        if (event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
+            Player p = (Player) event.getDamager();
+            Player c = (Player) event.getEntity();
 
+        }
     }
 
 
