@@ -6,7 +6,7 @@
 
     <groupId>com.caltr</groupId>
     <artifactId>yungchai</artifactId>
-    <version>2.8</version>
+    <version>3.5</version>
     <packaging>jar</packaging>
 
     <name>yungchai</name>

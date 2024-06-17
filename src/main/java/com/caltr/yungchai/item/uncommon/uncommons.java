@@ -43,13 +43,13 @@ public class uncommons implements Listener {
             }
         }
 
-        if ((event.getAction() == Action.LEFT_CLICK_BLOCK) || (event.getAction() == Action.LEFT_CLICK_BLOCK)) {
+        if ((event.getAction() == Action.LEFT_CLICK_BLOCK) | (event.getAction() == Action.LEFT_CLICK_BLOCK)) {
             if (event.getPlayer().getInventory().getItemInMainHand().isSimilar(HEALER_NEEDLE())) {
                 Player p = event.getPlayer();
                 UUID uuid = p.getUniqueId();
                 if (!Yungchai.NEEDLE_COUNTER.check(uuid)) {Yungchai.NEEDLE_COUNTER.push(uuid);}
                 Yungchai.NEEDLE_COUNTER.increment(uuid);
-                p.getWorld().playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_COW_BELL, 10, Yungchai.NEEDLE_COUNTER.get(uuid)+5);
+                p.getWorld().playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_COW_BELL, 10, Yungchai.NEEDLE_COUNTER.get(uuid)-7);
                 if (!(Yungchai.NEEDLE_COUNTER.get(uuid) == 9)) {return;}
                 Yungchai.NEEDLE_COUNTER.set(uuid, 0);
                 p.setHealth(p.getHealth()+1);
@@ -89,7 +89,7 @@ public class uncommons implements Listener {
 
             if (p.getInventory().getItemInMainHand().isSimilar(HEALER_POT())) {
                 c.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 40, 2));
-                p.setVelocity(p.getVelocity().multiply(-1.5));
+                p.setVelocity(p.getEyeLocation().getDirection().multiply(-1.6));
             }
         }
     }
