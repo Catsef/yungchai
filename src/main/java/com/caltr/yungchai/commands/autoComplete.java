@@ -19,6 +19,8 @@ public class autoComplete implements TabCompleter {
             autocompleteOptions.add("hunter_axe");
             autocompleteOptions.add("brawler_glove");
             autocompleteOptions.add("brawler_chain");
+            autocompleteOptions.add("healer_pot");
+            autocompleteOptions.add("healer_needle");
             return autocompleteOptions;
         }
 

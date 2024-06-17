@@ -1,6 +1,7 @@
 package com.caltr.yungchai.commands;
 
 import com.caltr.yungchai.item.common.commons;
+import com.caltr.yungchai.item.uncommon.uncommons;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -39,6 +40,15 @@ public class itemCommand implements CommandExecutor {
                 }
                 case "brawler_chain": {
                     toSend = commons.BRAWLER_CHAIN();
+                    break;
+                }
+                case "healer_pot": {
+                    toSend = uncommons.HEALER_POT();
+                    break;
+                }
+                case "healer_needle": {
+                    toSend = uncommons.HEALER_NEEDLE();
+                    break;
                 }
 
             }
