@@ -50,6 +50,10 @@ public class itemCommand implements CommandExecutor {
                     toSend = uncommons.HEALER_NEEDLE();
                     break;
                 }
+                case "gladiator_axe": {
+                    toSend = uncommons.GLADIATOR_AXE();
+                    break;
+                }
 
             }
             player.getInventory().addItem(toSend);
